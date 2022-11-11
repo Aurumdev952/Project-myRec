@@ -1,5 +1,7 @@
 import click
 
+# hide_input=True
+
 # commmand groups
 @click.group
 def master():
