@@ -21,8 +21,10 @@ def loadData(filename=FILE):
 def check_save():
     data = loadData()
     if data:
+        print("True....................")
         return True
     else:
+        print("False...............................")
         return False
 
 class Save():

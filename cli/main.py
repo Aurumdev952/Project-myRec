@@ -21,7 +21,7 @@ def functions():
 
 @click.group
 def createAccount():
-    pass
+    print("hello world")
 
 # optlist
 CATEGORIES = {
@@ -53,7 +53,7 @@ def createRec(title, subject, value, max_value, category):
     """
     Create a new record.
     """
-    if config.check_save:
+    if config.check_save == True:
         data = {}
         user = config.get_save()
         userid = user.getId()
@@ -66,7 +66,7 @@ def createRec(title, subject, value, max_value, category):
 
         print(api.create_rec(data))
     else:
-        createAccount()
+        print("Error, please create an account or login")
 
 
 
@@ -87,13 +87,12 @@ def updateRec(id, field, new_value):
     """
     Update a record.
     """
-    if config.check_save:
+    if config.check_save == True:
         data = {}
         data[field] = new_value
         print(api.update_rec(id, data))
     else:
-        createAccount()
-
+        print("Error, please create an account or login")
 
 
 
@@ -101,15 +100,20 @@ def updateRec(id, field, new_value):
 
 
 @click.command()
+def hello():
+    print("hello")
+
+@click.command()
 @click.argument("id", type=str, required=True)
 def deleteRec(id):
     '''
     delete record
     '''
-    if config.check_save:
+    if config.check_save == True:
         print(api.delete_rec(id))
     else:
-        createAccount()
+        print("Error, please create an account or login")
+
 
 
     
@@ -121,12 +125,13 @@ def ById(id):
     '''
     retrieve record by id
     '''
-    if config.check_save:
+    if config.check_save == True:
         user = config.get_save()
         userid = user.getId()
         print(api.get_byid(userid, id))
     else:
-        createAccount()
+        print("Error, please create an account or login")
+
 
 
 
@@ -137,12 +142,13 @@ def BySubject(subject):
     '''
     retrieve record by subject
     '''
-    if config.check_save:
+    if config.check_save == True:
         user = config.get_save()
         userid = user.getId()
         print(api.get_bysubject(userid, subject))
     else:
-        createAccount()
+        print("Error, please create an account or login")
+
 
 
 @click.command()
@@ -151,12 +157,13 @@ def ByCategory(category):
     '''
     retrieve record by category
     '''
-    if config.check_save:
+    if config.check_save == True:
         user = config.get_save()
         userid = user.getId()
         print(api.get_bycategory(userid, CATEGORIES[category]))
     else:
-        createAccount()
+        print("Error, please create an account or login")
+
 
 
 @click.command()
@@ -164,12 +171,13 @@ def All():
     '''
     get all user records
     '''
-    if config.check_save:
+    if config.check_save == True:
         user = config.get_save()
         userid = user.getId()
         print(api.get_all(userid))
     else:
-        createAccount()
+        print("Error, please create an account or login")
+
 
 
 
@@ -200,7 +208,7 @@ def updateUser(id, field, new_value):
     """
     Update a user
     """
-    if config.check_save:
+    if config.check_save == True:
         user = config.get_save()
         userid = user.getId()
         data = {}
@@ -208,7 +216,8 @@ def updateUser(id, field, new_value):
         print(api.update_user(userid, data))
         config.update_save(field, new_value)
     else:
-        createAccount()
+        print("Error, please create an account or login")
+
 
 
 
