@@ -1,5 +1,6 @@
 import click
-import api
+import api.api_router as api
+import config.config as config
 
 
 # hide_input=True
@@ -18,12 +19,28 @@ def getRec():
 def functions():
     pass
 
+@click.group
+def createAccount():
+    pass
+
 # optlist
 CATEGORIES = {
     "t": "test",
     "c": "CAT",
     "e": "exam"
 }
+
+USER = [
+    "username",
+    "password"
+]
+REC = [
+    "title",
+    "subject",
+    "value",
+    "max_value",
+    "category"
+]
 
 #  
 @click.command()
@@ -36,37 +53,82 @@ def createRec(title, subject, value, max_value, category):
     """
     Create a new record.
     """
-    print(title, subject, value, max_value, CATEGORIES[category])
+    if config.check_save:
+        data = {}
+        user = config.get_save()
+        userid = user.getId()
+        data["user"] = userid
+        data["title"] = title
+        data["subject"] = subject
+        data["value"] = value
+        data["max_value"] = max_value
+        data["category"] = CATEGORIES[category]
+
+        print(api.create_rec(data))
+    else:
+        createAccount()
+
+
+
+
+ 
+
+    # print(title, subject, value, max_value, CATEGORIES[category])
 
 
 
 @click.command()
-@click.argument("id", type=int, required=True)
-@click.option("-f", "field", prompt="Enter the field of the record you want to update", type=str, required=True)
-@click.argument("new_value", type=int, required=True)
+@click.argument("id", type=str, required=True)
+@click.option("-f", "field", prompt="Enter the field of the record you want to update", type=click.Choice(REC), required=True)
+@click.option("-nv", "new_value", prompt="Enter the new value", type=str, required=True)
+# @click.argument("new_value", type=str, required=True)
 def updateRec(id, field, new_value):
+         
     """
     Update a record.
     """
-    print(id, field, new_value)
+    if config.check_save:
+        data = {}
+        data[field] = new_value
+        print(api.update_rec(id, data))
+    else:
+        createAccount()
+
+
+
+
+
 
 
 @click.command()
-@click.argument("id", type=int, required=True)
+@click.argument("id", type=str, required=True)
 def deleteRec(id):
     '''
     delete record
     '''
-    print(id)
+    if config.check_save:
+        print(api.delete_rec(id))
+    else:
+        createAccount()
+
+
+    
 
 
 @click.command()
-@click.argument("id", type=int, required=True)
+@click.argument("id", type=str, required=True)
 def ById(id):
     '''
     retrieve record by id
     '''
-    print(id)
+    if config.check_save:
+        user = config.get_save()
+        userid = user.getId()
+        print(api.get_byid(userid, id))
+    else:
+        createAccount()
+
+
 
 
 @click.command()
@@ -75,7 +137,12 @@ def BySubject(subject):
     '''
     retrieve record by subject
     '''
-    print(subject)
+    if config.check_save:
+        user = config.get_save()
+        userid = user.getId()
+        print(api.get_bysubject(userid, subject))
+    else:
+        createAccount()
 
 
 @click.command()
@@ -84,7 +151,25 @@ def ByCategory(category):
     '''
     retrieve record by category
     '''
-    print(category)
+    if config.check_save:
+        user = config.get_save()
+        userid = user.getId()
+        print(api.get_bycategory(userid, CATEGORIES[category]))
+    else:
+        createAccount()
+
+
+@click.command()
+def All():
+    '''
+    get all user records
+    '''
+    if config.check_save:
+        user = config.get_save()
+        userid = user.getId()
+        print(api.get_all(userid))
+    else:
+        createAccount()
 
 
 
@@ -96,14 +181,63 @@ def ByCategory(category):
 @click.option('-p', 'password', prompt="Enter password", type=str, required=True, hide_input=True)
 def createUser(name, email, password):
     '''Create a new user'''
-    print(name, email, password)
+
+    data = {}
+    data["username"] = name
+    data["email"] = email
+    data["password"] = password
+
+    res = api.create_user(data)
+    print(config.initialiseSave(res["_id"], res["username"], res["email"], password, res["createdAt"]))
+
+    # print(name, email, password)
+
+@click.command()
+@click.argument("id", type=int, required=True)
+@click.option("-f", "field", prompt="Enter the field of the user profile you want to update", type=click.Choice(USER), required=True)
+@click.argument("new_value", type=int, required=True)
+def updateUser(id, field, new_value):
+    """
+    Update a user
+    """
+    if config.check_save:
+        user = config.get_save()
+        userid = user.getId()
+        data = {}
+        data[field] = new_value
+        print(api.update_user(userid, data))
+        config.update_save(field, new_value)
+    else:
+        createAccount()
+
+
+
+
+
+
 
 @click.command()
 @click.option('-e', 'email', prompt="Enter email", type=str, required=True)
 @click.option('-p', 'password', prompt="Enter password", type=str, required=True, hide_input=True)
 def loginUser(email, password):
     '''Create a new user'''
-    print(email, password)
+    # data = {}
+    # data["email"] = email
+    # data["password"] = password
+    # res = api.get_user(data)
+    # print(config.initialiseSave(res["_id"], res["username"], res["email"], password, res["createdAt"]))
+    pass
+    
+
+@click.command()
+def checkUserprofile():
+    '''check your user profile'''
+    pass
+    
+
+
+
+
 
 
 
@@ -117,10 +251,16 @@ master.add_command(user)
 
 user.add_command(createUser)
 user.add_command(loginUser)
+user.add_command(updateUser)
 
+getRec.add_command(All)
 getRec.add_command(ById)
 getRec.add_command(ByCategory)
 getRec.add_command(BySubject)
+
+createAccount.add_command(createUser)
+createAccount.add_command(loginUser)
+
 
 
 if __name__ == "__main__":
