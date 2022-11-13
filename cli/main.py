@@ -1,4 +1,6 @@
 import click
+import api
+
 
 # hide_input=True
 
@@ -6,13 +8,12 @@ import click
 @click.group
 def master():
     pass
-
-
+@click.group
+def user():
+    pass
 @click.group
 def getRec():
     pass
-
-
 @click.group
 def functions():
     pass
@@ -24,7 +25,7 @@ CATEGORIES = {
     "e": "exam"
 }
 
-# optlist 
+#  
 @click.command()
 @click.option("-t", "title", prompt="Enter the title of the record", type=str, required=True) 
 @click.option("-s", "subject", prompt="Enter the subject of the record", type=str, required=True)
@@ -87,12 +88,35 @@ def ByCategory(category):
 
 
 
+# user functions
+
+@click.command()
+@click.option('-n', 'name', prompt="Enter username", type=str, required=True)
+@click.option('-e', 'email', prompt="Enter email", type=str, required=True)
+@click.option('-p', 'password', prompt="Enter password", type=str, required=True, hide_input=True)
+def createUser(name, email, password):
+    '''Create a new user'''
+    print(name, email, password)
+
+@click.command()
+@click.option('-e', 'email', prompt="Enter email", type=str, required=True)
+@click.option('-p', 'password', prompt="Enter password", type=str, required=True, hide_input=True)
+def loginUser(email, password):
+    '''Create a new user'''
+    print(email, password)
+
+
+
 
 # register all commands
 master.add_command(createRec)
 master.add_command(updateRec)
 master.add_command(deleteRec)
 master.add_command(getRec)
+master.add_command(user)
+
+user.add_command(createUser)
+user.add_command(loginUser)
 
 getRec.add_command(ById)
 getRec.add_command(ByCategory)
