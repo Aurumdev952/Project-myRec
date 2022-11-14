@@ -1,6 +1,11 @@
 setup.py
 cli/__init__.py
 cli/main.py
+cli/api/__init__.py
+cli/api/api_client.py
+cli/api/api_router.py
+cli/config/__init__.py
+cli/config/config.py
 myRec_CLI.egg-info/PKG-INFO
 myRec_CLI.egg-info/SOURCES.txt
 myRec_CLI.egg-info/dependency_links.txt
