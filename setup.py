@@ -9,7 +9,8 @@ setup(
     packages=find_packages(),
     install_requires=[
         "click",
-        "httpx"
+        "httpx",
+        "Rich"
     ],
     version="1.0.1",
     entry_points='''
