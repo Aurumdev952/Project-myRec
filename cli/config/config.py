@@ -1,21 +1,27 @@
 import pickle
-FILE = "configdb.data"
+import os
+
+absolute_path = os.path.dirname(__file__)
+relative_path = "configdb.data"
+FILE = os.path.join(absolute_path, relative_path)
+# FILE = "configdb.data"
 def storeData(data, filename=FILE):  
     dt = {}
     dt["data"] = data
     # Its important to use binary mode
     # with open(filename, "wb") as f:
     #     pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
-    dbfile = open(filename, 'wb')
-    pickle.dump(dt, dbfile)                     
-    dbfile.close()
+    with open(filename, 'rb') as dbfile:
+        dbfile = open(filename, 'wb')
+        pickle.dump(dt, dbfile)                     
+
   
 def loadData(filename=FILE):
     # for reading also binary mode is important
-    dbfile = open(filename, 'rb')     
-    db = pickle.load(dbfile)
-    dbfile.close()
-    return db['data']
+    with open(filename, 'rb') as dbfile:
+        dbfile = open(filename, 'rb')     
+        db = pickle.load(dbfile)
+        return db['data']
 
 
 def check_save():

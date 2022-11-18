@@ -58,7 +58,7 @@ def createRec(title, subject, value, max_value, category):
     """
     Create a new record.
     """
-    if config.check_save == True:
+    if config.check_save() == True:
         data = {}
         user = config.get_save()
         userid = user.getId()
@@ -69,7 +69,11 @@ def createRec(title, subject, value, max_value, category):
         data["max_value"] = max_value
         data["category"] = CATEGORIES[category]
 
-        print(api.create_rec(data))
+        res = api.create_rec(data)
+        if res != False:
+            print(res)
+        else:
+            print("Error has occurred, please try again")
     else:
         print("Error, please create an account or login")
 
@@ -92,10 +96,14 @@ def updateRec(id, field, new_value):
     """
     Update a record.
     """
-    if config.check_save == True:
+    if config.check_save() == True:
         data = {}
         data[field] = new_value
-        print(api.update_rec(id, data))
+        res = api.update_rec(id, data)
+        if res != False:
+            print(res)
+        else:
+            print("Error has occurred, please try again")
     else:
         print("Error, please create an account or login")
 
@@ -114,8 +122,12 @@ def deleteRec(id):
     '''
     delete record
     '''
-    if config.check_save == True:
-        print(api.delete_rec(id))
+    if config.check_save() == True:
+        res = api.delete_rec(id)
+        if res != False:
+            print(res)
+        else:
+            print("Error has occurred, please try again")
     else:
         print("Error, please create an account or login")
 
@@ -130,10 +142,14 @@ def ById(id):
     '''
     retrieve record by id
     '''
-    if config.check_save == True:
+    if config.check_save() == True:
         user = config.get_save()
         userid = user.getId()
-        print(api.get_byid(userid, id))
+        res = api.get_byid(userid, id)
+        if res != False:
+            print(res)
+        else:
+            print("Error has occurred, please try again")
     else:
         print("Error, please create an account or login")
 
@@ -147,10 +163,14 @@ def BySubject(subject):
     '''
     retrieve record by subject
     '''
-    if config.check_save == True:
+    if config.check_save() == True:
         user = config.get_save()
         userid = user.getId()
-        print(api.get_bysubject(userid, subject))
+        res = api.get_bysubject(userid, subject)
+        if res != False:
+            print(res)
+        else:
+            print("Error has occurred, please try again")
     else:
         print("Error, please create an account or login")
 
@@ -162,10 +182,14 @@ def ByCategory(category):
     '''
     retrieve record by category
     '''
-    if config.check_save == True:
+    if config.check_save() == True:
         user = config.get_save()
         userid = user.getId()
-        print(api.get_bycategory(userid, CATEGORIES[category]))
+        res = api.get_bycategory(userid, CATEGORIES[category])
+        if res != False:
+            print(res)
+        else:
+            print("Error has occurred, please try again")
     else:
         print("Error, please create an account or login")
 
@@ -176,10 +200,14 @@ def All():
     '''
     get all user records
     '''
-    if config.check_save == True:
+    if config.check_save() == True:
         user = config.get_save()
         userid = user.getId()
-        print(api.get_all(userid))
+        res = api.get_all(userid)
+        if res != False:
+            print(res)
+        else:
+            print("Error has occurred, please try again")
     else:
         print("Error, please create an account or login")
 
@@ -201,7 +229,12 @@ def createUser(name, email, password):
     data["password"] = password
 
     res = api.create_user(data)
-    print(config.initialiseSave(res["_id"], res["username"], res["email"], password, res["createdAt"]))
+    
+    if res != False:
+        print(config.initialiseSave(res["_id"], res["username"], res["email"], password, res["createdAt"]))
+        print(res)
+    else:
+        print("Error has occurred, please try again")
 
     # print(name, email, password)
 
@@ -213,13 +246,18 @@ def updateUser(id, field, new_value):
     """
     Update a user
     """
-    if config.check_save == True:
+    if config.check_save() == True:
         user = config.get_save()
         userid = user.getId()
         data = {}
         data[field] = new_value
-        print(api.update_user(userid, data))
-        config.update_save(field, new_value)
+        res = api.update_user(userid, data)
+        
+        if res != False:
+            config.update_save(field, new_value)
+            print(res)
+        else:
+            print("Error has occurred, please try again")
     else:
         print("Error, please create an account or login")
 
