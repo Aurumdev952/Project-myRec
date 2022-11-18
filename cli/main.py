@@ -5,6 +5,7 @@ import config.config as config
 
 # hide_input=True
 
+
 # commmand groups
 @click.group
 def master():
