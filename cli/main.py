@@ -277,6 +277,7 @@ createAccount.add_command(loginUser)
 
 
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
+    master()
 
 

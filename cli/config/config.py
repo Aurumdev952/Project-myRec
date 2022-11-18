@@ -6,7 +6,7 @@ def storeData(data, filename=FILE):
     # Its important to use binary mode
     # with open(filename, "wb") as f:
     #     pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
-    dbfile = open(filename, 'ab')
+    dbfile = open(filename, 'wb')
     pickle.dump(dt, dbfile)                     
     dbfile.close()
   
@@ -20,7 +20,7 @@ def loadData(filename=FILE):
 
 def check_save():
     data = loadData()
-    if data:
+    if data != None:
         print("True....................")
         return True
     else:

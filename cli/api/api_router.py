@@ -19,9 +19,12 @@ async def put(url, update):
 
 # post request
 async def post(url, data):
-    async with httpx.AsyncClient() as client:
+    timeout = httpx.Timeout(connect=None, read=None, write=None, pool=None)
+    async with httpx.AsyncClient(timeout=timeout) as client:
         r = await client.post(url, json=data)
-        return r.json()
+        if r.status_code == 200:
+            print(r.json())
+            return r.json()
 
 
 # delete request
