@@ -1,7 +1,44 @@
 import asyncio
 import httpx
+# import requests
+# from requests.adapters import HTTPAdapter, Retry
 
-# get
+# # get
+
+# def req_post(data):
+#     try: 
+#         r = requests.post("https://myrec.onrender.com/api/validate/user", json=data)
+#         print(r.json())
+#         return r.json(), r.status_code
+#     except Exception as e:
+#         return {
+#             "status": 500,
+#             "message": str(e)
+#         }, 500
+        
+
+# def req_post2(data):
+#     try:
+#         url = 'https://myrec.onrender.com/api/validate/user'
+#         response = requests.post(url, json=data)
+
+#         session = requests.Session()
+#         retry = Retry(connect=3, backoff_factor=0.5)
+#         adapter = HTTPAdapter(max_retries=retry)
+#         session.mount('http://', adapter)
+#         session.mount('https://', adapter)
+
+#         url = 'https://reqres.in/api/users'
+#         response = session.get(url)
+#         return response.json(), response.status_code
+
+  
+#     except Exception as e:
+#         return {
+#             "status": 500,
+#             "message": str(e)
+#         }, 500
+        
 
 async def get(url):
     timeout = httpx.Timeout(connect=None, read=None, write=None, pool=None)
@@ -181,6 +218,18 @@ def get_user(userid):
     else:
         print(status_code)
         return False
+    
+def validate_user(data):
+    url = main_url + "validate/user"
+    req, status_code = post_data(url, data)
+    print(req)
+    if status_code == 200:
+        return req
+    else:
+        print(status_code)
+        return False
+    
+
 
 
 

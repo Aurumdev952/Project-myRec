@@ -273,19 +273,40 @@ def updateUser(id, field, new_value):
 @click.option('-e', 'email', prompt="Enter email", type=str, required=True)
 @click.option('-p', 'password', prompt="Enter password", type=str, required=True, hide_input=True)
 def loginUser(email, password):
-    '''Create a new user'''
-    # data = {}
-    # data["email"] = email
-    # data["password"] = password
-    # res = api.get_user(data)
-    # print(config.initialiseSave(res["_id"], res["username"], res["email"], password, res["createdAt"]))
-    pass
+    '''Logs in a user'''
+    data = {}
+    data["email"] = email
+    data["password"] = password
+    res = api.validate_user(data)
+    
+    if res != False:
+        try:
+            print(config.initialiseSave(res["_id"], res["username"], res["email"], password, res["createdAt"]))
+            print("you are now logged in")
+            
+        except:
+            print('login failed')    
+        print(res)
+    else:
+        print("Error has occurred, please try again")
+   
     
 
 @click.command()
 def checkUserprofile():
     '''check your user profile'''
-    pass
+    if config.check_save() == True:
+        user = config.get_save()
+        userid = user.getId()
+        res = api.get_user(userid)
+        if res != False:
+            print(res)
+        else:
+            print("Error has occurred, please try again")
+    else:
+        print("Error, please create an account or login")
+
+   
     
 
 
@@ -305,6 +326,7 @@ master.add_command(user)
 user.add_command(createUser)
 user.add_command(loginUser)
 user.add_command(updateUser)
+user.add_command(checkUserprofile)
 
 getRec.add_command(All)
 getRec.add_command(ById)

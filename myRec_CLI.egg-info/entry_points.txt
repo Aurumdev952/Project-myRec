@@ -1,0 +1,2 @@
+[console_scripts]
+myrec = cli.main:master

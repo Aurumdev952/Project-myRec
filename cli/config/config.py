@@ -18,10 +18,16 @@ def storeData(data, filename=FILE):
   
 def loadData(filename=FILE):
     # for reading also binary mode is important
-    with open(filename, 'rb') as dbfile:
-        dbfile = open(filename, 'rb')     
-        db = pickle.load(dbfile)
-        return db['data']
+    try:
+        with open(filename, 'rb') as dbfile:
+            dbfile = open(filename, 'rb')     
+            db = pickle.load(dbfile)
+            return db['data']
+    except:
+        return None
+        
+
+        
 
 
 def check_save():
@@ -68,6 +74,9 @@ def update_save(field, data):
     save = loadData()
     save.update(field, data)
     storeData(save)
+
+
+
 
 
 
