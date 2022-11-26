@@ -1,4 +1,5 @@
 import pickle
+from rich.console import Console
 import os
 
 absolute_path = os.path.dirname(__file__)
@@ -31,13 +32,16 @@ def loadData(filename=FILE):
 
 
 def check_save():
-    data = loadData()
-    if data != None:
-        print("True....................")
-        return True
-    else:
-        print("False...............................")
-        return False
+    c = Console()
+    with c.status("[bold green]loading save...[/]", spinner="dots7") as status:
+        data = loadData()
+        if data != None:
+            c.print("Save found", style="bold green")
+            return True
+        else:
+            c.print("Save not found", style="bold red")
+            # print("False...............................")
+            return False
 
 class Save():
     def __init__(self, id, username, email, password, date):

@@ -154,7 +154,7 @@ def update_rec(id, data):
         return False
 
 def update_user(id, data):
-    url = main_url + "update/rec" + id
+    url = main_url + "update/user/" + id
     req, status_code = update_data(url, data)
     if status_code == 200:
         return req

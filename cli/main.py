@@ -1,11 +1,22 @@
-import click
+# import click
+import rich_click as click 
 import api.api_router as api
 import config.config as config
+import display as d
+
+
+
 
 
 # hide_input=True
 
-
+click.rich_click.USE_MARKDOWN = True
+click.rich_click.SHOW_ARGUMENTS = True
+click.rich_click.GROUP_ARGUMENTS_OPTIONS = True
+click.rich_click.STYLE_ERRORS_SUGGESTION = "magenta italic"
+click.rich_click.ERRORS_SUGGESTION = "Try running the '--help' flag for more information."
+click.rich_click.ERRORS_EPILOGUE = "To find out more, visit [link=https://mytool.com]https://mytool.com[/link]"
+click.rich_click.STYLE_OPTION = "bold cyan"
 # commmand groups
 
 
@@ -15,19 +26,26 @@ def master():
 
 @click.group
 def user():
+    """
+    👈 user commands 
+    
+    """
     pass
 
 @click.group
 def getRec():
+    """
+    retrieve rec
+    """
     pass
 
-@click.group
-def functions():
-    pass
+# @click.group
+# def functions():
+#     pass
 
-@click.group
-def createAccount():
-    print("hello world")
+# @click.group
+# def createAccount():
+#     print("hello world")
 
 # optlist
 CATEGORIES = {
@@ -72,11 +90,11 @@ def createRec(title, subject, value, max_value, category):
 
         res = api.create_rec(data)
         if res != False:
-            print(res)
+            d.print_rec(res, "Rec created")
         else:
-            print("Error has occurred, please try again")
+            d.output("Error has occurred, please try again", mode="error")
     else:
-        print("Error, please create an account or login")
+        d.output("Error, please create an account or login", mode="error")
 
 
 
@@ -102,11 +120,11 @@ def updateRec(id, field, new_value):
         data[field] = new_value
         res = api.update_rec(id, data)
         if res != False:
-            print(res)
+            d.print_rec(res, "Updated")
         else:
-            print("Error has occurred, please try again")
+            d.output("Error has occurred, please try again", mode="error")
     else:
-        print("Error, please create an account or login")
+        d.output("Error, please create an account or login", mode="error")
 
 
 
@@ -126,11 +144,11 @@ def deleteRec(id):
     if config.check_save() == True:
         res = api.delete_rec(id)
         if res != False:
-            print(res)
+            d.print_rec(res, "Deleted")
         else:
-            print("Error has occurred, please try again")
+            d.output("Error has occurred, please try again", mode="error")
     else:
-        print("Error, please create an account or login")
+        d.output("Error, please create an account or login", mode="error")
 
 
 
@@ -148,11 +166,11 @@ def ById(id):
         userid = user.getId()
         res = api.get_byid(userid, id)
         if res != False:
-            print(res)
+            d.print_rec(res, "access complete")
         else:
-            print("Error has occurred, please try again")
+            d.output("Error has occurred, please try again", mode="error")
     else:
-        print("Error, please create an account or login")
+        d.output("Error, please create an account or login", mode="error")
 
 
 
@@ -169,11 +187,11 @@ def BySubject(subject):
         userid = user.getId()
         res = api.get_bysubject(userid, subject)
         if res != False:
-            print(res)
+            d.print_table_all(res["records"], "access complete")
         else:
-            print("Error has occurred, please try again")
+            d.output("Error has occurred, please try again", mode="error")
     else:
-        print("Error, please create an account or login")
+        d.output("Error, please create an account or login", mode="error")
 
 
 
@@ -188,11 +206,11 @@ def ByCategory(category):
         userid = user.getId()
         res = api.get_bycategory(userid, CATEGORIES[category])
         if res != False:
-            print(res)
+            d.print_table_all(res["records"], "access complete")
         else:
-            print("Error has occurred, please try again")
+            d.output("Error has occurred, please try again", mode="error")
     else:
-        print("Error, please create an account or login")
+        d.output("Error, please create an account or login", mode="error")
 
 
 
@@ -206,11 +224,11 @@ def All():
         userid = user.getId()
         res = api.get_all(userid)
         if res != False:
-            print(res)
+            d.print_table_all(res["records"], "all rec")
         else:
-            print("Error has occurred, please try again")
+            d.output("Error has occurred, please try again", mode="error")
     else:
-        print("Error, please create an account or login")
+        d.output("Error, please create an account or login", mode="error")
 
 
 
@@ -232,18 +250,19 @@ def createUser(name, email, password):
     res = api.create_user(data)
     
     if res != False:
-        print(config.initialiseSave(res["_id"], res["username"], res["email"], password, res["createdAt"]))
-        print(res)
+        config.initialiseSave(res["_id"], res["username"], res["email"], password, res["createdAt"])
+        d.output("Successfully saved", mode="success")
+        d.print_user(res)
     else:
-        print("Error has occurred, please try again")
+        d.output("Error has occurred, please try again", mode="error")
 
     # print(name, email, password)
 
 @click.command()
-@click.argument("id", type=int, required=True)
+# @click.argument("id", type=int, required=True)
 @click.option("-f", "field", prompt="Enter the field of the user profile you want to update", type=click.Choice(USER), required=True)
-@click.argument("new_value", type=int, required=True)
-def updateUser(id, field, new_value):
+@click.option("-nv", "new_value", prompt="Enter the new value", type=str, required=True)
+def updateUser(field, new_value):
     """
     Update a user
     """
@@ -252,15 +271,18 @@ def updateUser(id, field, new_value):
         userid = user.getId()
         data = {}
         data[field] = new_value
+        # d.print(data)
         res = api.update_user(userid, data)
+        
         
         if res != False:
             config.update_save(field, new_value)
-            print(res)
+            d.print_user(res)
+            
         else:
-            print("Error has occurred, please try again")
+            d.output("Error has occurred, please try again", mode="error")
     else:
-        print("Error, please create an account or login")
+        d.output("Error, please create an account or login", mode="error")
 
 
 
@@ -282,13 +304,16 @@ def loginUser(email, password):
     if res != False:
         try:
             print(config.initialiseSave(res["_id"], res["username"], res["email"], password, res["createdAt"]))
-            print("you are now logged in")
+            d.output("you are now logged in", mode="success")
+            # print("you are now logged in")
+            d.print_user(res)
             
         except:
-            print('login failed')    
-        print(res)
+            d.output("login failed", mode="error")
+            # print('login failed')    
+        # print(res)
     else:
-        print("Error has occurred, please try again")
+        d.output("Error has occurred, please try again", mode="error")
    
     
 
@@ -300,11 +325,12 @@ def checkUserprofile():
         userid = user.getId()
         res = api.get_user(userid)
         if res != False:
-            print(res)
+            # d.print_json(res)
+            d.print_user(res)
         else:
-            print("Error has occurred, please try again")
+            d.output("Error has occurred, please try again", mode="error")
     else:
-        print("Error, please create an account or login")
+        d.output("Error, please create an account or login", mode="error")
 
    
     
@@ -333,8 +359,8 @@ getRec.add_command(ById)
 getRec.add_command(ByCategory)
 getRec.add_command(BySubject)
 
-createAccount.add_command(createUser)
-createAccount.add_command(loginUser)
+# createAccount.add_command(createUser)
+# createAccount.add_command(loginUser)
 
 
 
