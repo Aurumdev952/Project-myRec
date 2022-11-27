@@ -166,7 +166,28 @@ def ById(id):
         userid = user.getId()
         res = api.get_byid(userid, id)
         if res != False:
-            d.print_rec(res, "access complete")
+            d.print_rec(res["records"][0], "access complete")
+        else:
+            d.output("Error has occurred, please try again", mode="error")
+    else:
+        d.output("Error, please create an account or login", mode="error")
+
+@click.command()
+@click.argument("title", type=str, required=True)
+def ByTitle(title):
+    '''
+    retrieve record by its title
+    '''
+    if config.check_save() == True:
+        user = config.get_save()
+        userid = user.getId()
+        res = api.get_bytitle(userid, title)
+        if res != False:
+            if len(res['records']) == 1:
+                d.print_rec(res["records"][0], "access complete")
+            else:
+                d.print_table_all(res["records"], "access complete")
+
         else:
             d.output("Error has occurred, please try again", mode="error")
     else:
@@ -250,7 +271,7 @@ def createUser(name, email, password):
     res = api.create_user(data)
     
     if res != False:
-        config.initialiseSave(res["_id"], res["username"], res["email"], password, res["createdAt"])
+        r = config.initialiseSave(res["_id"], res["username"], res["email"], password, res["createdAt"])
         d.output("Successfully saved", mode="success")
         d.print_user(res)
     else:
@@ -303,7 +324,7 @@ def loginUser(email, password):
     
     if res != False:
         try:
-            print(config.initialiseSave(res["_id"], res["username"], res["email"], password, res["createdAt"]))
+            r = config.initialiseSave(res["_id"], res["username"], res["email"], password, res["createdAt"])
             d.output("you are now logged in", mode="success")
             # print("you are now logged in")
             d.print_user(res)
@@ -356,6 +377,7 @@ user.add_command(checkUserprofile)
 
 getRec.add_command(All)
 getRec.add_command(ById)
+getRec.add_command(ByTitle)
 getRec.add_command(ByCategory)
 getRec.add_command(BySubject)
 

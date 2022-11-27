@@ -82,7 +82,7 @@ async def post(url, data):
         
         try:
             r = await client.post(url, json=data)
-            print(r.json())
+            # print(r.json())
             return r.json(), r.status_code
         except Exception as e:
             return {
@@ -180,6 +180,16 @@ def get_byid(userid, id):
         print(status_code)
         return False
 
+def get_bytitle(userid, title):
+    url = main_url + "get/bytitle/" + userid + "/" + title
+    req, status_code = get_data(url)
+    # print(req)
+    if status_code == 200:
+        return req
+    else:
+        print(status_code)
+        return False
+
 def get_bycategory(userid, category):
     url = main_url + "get/bycategory/" + userid + "/" + category
     req, status_code = get_data(url)
@@ -222,7 +232,7 @@ def get_user(userid):
 def validate_user(data):
     url = main_url + "validate/user"
     req, status_code = post_data(url, data)
-    print(req)
+    # print(req)
     if status_code == 200:
         return req
     else:
