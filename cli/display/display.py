@@ -67,7 +67,7 @@ def print_rec(data, message):
         prstr = ''
         for field, value in data.items():
             if field not in ['user', '__v', '_id']:
-                prstr += f"[bold light_blue]{field.capitalize()}[/] : {value} \n"
+                prstr += f"[bold blue]{field.capitalize()}[/] : {value} \n"
         panel = Panel(prstr, title=f"[bold green]{message}[/]{data['user']}", subtitle=data["_id"])
         console.print(panel, justify="center")
     else:
@@ -79,8 +79,11 @@ def print_user(data):
     if data != []:
         prstr = ''
         for field, value in data.items():
-            if field not in ['__v', '_id', "records"]:
+            if field not in ['__v', '_id', "records", "password"]:
                 prstr += f"[bold green]{field.capitalize()}[/] : {value} \n"
+            elif field == "password":
+                prstr += f"[bold green]{field.capitalize()}[/] : {'*'*len(value)} \n"
+
             
         panel = Panel(prstr, title=f"[bold purple]Rec by[/] [underline green italic]{data['username']}[/]", subtitle=data["_id"])
         console.print(panel, justify="center")
