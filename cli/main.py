@@ -70,7 +70,7 @@ REC = [
 @click.command()
 @click.option("-t", "title", prompt="Enter the title of the record", type=str, required=True) 
 @click.option("-s", "subject", prompt="Enter the subject of the record", type=str, required=True)
-@click.option("-v", "value", prompt="Enter the value of the record", type=int, required=True)
+@click.option("-v", "value", prompt="Enter the value of the record", type=float, required=True)
 @click.option("-mv", "max_value", prompt="Enter the maximum value of the record", type=int, required=True)
 @click.option("-c", "category", prompt="Enter the category of the record", type=click.Choice(CATEGORIES.keys()), default="t", required=True)
 def createRec(title, subject, value, max_value, category):
